@@ -1,7 +1,8 @@
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <string>
+
+void isValidUser(); 
 
 int main()
 {
@@ -10,7 +11,7 @@ int main()
     std::string unencrypted;
     std::string username;
     std::string text;
-    char key[5] = "abcd";
+    char key[5] = "somewhere";
 
     std::ofstream of1("Credentials.txt", std::ios::app);
     if (!of1.is_open())
@@ -24,11 +25,11 @@ int main()
     std::cout << "\nEnter the password: ";
     std::cin >> admin_pwd;
 
-    // Writing the admin password to a file
+    
     of1 << username << ", " << admin_pwd << std::endl;
     of1.close();
 
-    // Reading the encrypted admin password from the file
+    
     std::ifstream if1("Credentials.txt");
     if (!if1.is_open())
     {
@@ -40,7 +41,7 @@ int main()
     {
         for (int x = 0; x < text.size(); x++)
         {
-            // Encryption process (XOR with key)
+            
             encrypted += text[x] ^ key[x % 4];
         }
     }
@@ -48,7 +49,7 @@ int main()
 
     std::cout << "Encrypted: " << encrypted << std::endl;
 
-    // Decryption process (XOR with key)
+
     for (int x = 0; x < encrypted.size(); x++)
     {
         unencrypted += encrypted[x] ^ key[x % 4];
@@ -56,6 +57,44 @@ int main()
 
     std::cout << "Unencrypted: " << unencrypted << std::endl;
 
+    isValidUser(); 
+
     system("pause");
     return 0;
+}
+
+void isValidUser()
+{
+    std::ifstream file("Credentials.txt");
+    if (!file.is_open())
+    {
+        std::cout << "Failed to open the file.\n";
+        return;
+    }
+
+    std::string wordToFind;
+    std::cout << "\nEnter the word to find: ";
+    std::cin >> wordToFind;
+
+    bool found = false;
+    std::string line;
+    while (getline(file, line))
+    {
+        if (line.find(wordToFind) != std::string::npos)
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        std::cout << "The word \"" << wordToFind << "\" is present in the file.\n";
+    }
+    else
+    {
+        std::cout << "The word \"" << wordToFind << "\" is not present in the file.\n";
+    }
+
+    file.close();
 }
